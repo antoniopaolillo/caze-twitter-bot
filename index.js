@@ -64,7 +64,7 @@ async function openStream() {
       });
       mention = parentTweet.data.entities?.mentions.find((mention) => mention.username === 'bot_do_caze');
     }
-    const isAlreadyMentioned = mention && (text.match(/@bot_do_caze/g).length === 1);
+    const isAlreadyMentioned = mention && (text.match(/@bot_do_caze/g)?.length === 1);
   
     const isAReplyForMention = (referenced_tweets && in_reply_to_user_id === '1498415154962350085')
 
