@@ -44,25 +44,35 @@ async function openStream() {
   });
 
   const stream = await userClientV2.v2.searchStream({
-    'tweet.fields': ['referenced_tweets', 'author_id'],
-    expansions: ['referenced_tweets.id', 'in_reply_to_user_id'],
+    'tweet.fields': ['referenced_tweets', 'author_id', 'entities', 'text'],
+    expansions: ['referenced_tweets.id', 'in_reply_to_user_id', 'referenced_tweets.id.author_id'],
   });
 
-  // stream.autoReconnect = true;
+  stream.autoReconnect = true;
 
-  // stream.on(ETwitterStreamEvent.Data, async tweet => {
-  //   const { data: { text, referenced_tweets, in_reply_to_user_id, id } } = tweet;
-  //   const hasMentionText = text.includes("@bot_do_caze");
-  //   const isARt = tweet.data.referenced_tweets?.some(tweet => tweet.type === 'retweeted') ?? false;
-  //   const isAReplyForMention = (referenced_tweets && in_reply_to_user_id === '1498415154962350085')
-  //   console.log(data);
-  //   if (isARt || !hasMentionText || isAReplyForMention) {
-  //     return;
-  //   }
+  stream.on(ETwitterStreamEvent.Data, async tweet => {
+    const { data: { text, referenced_tweets, in_reply_to_user_id, id } } = tweet;
+    const hasMentionText = text.includes("@bot_do_caze");
+    const isARt = tweet.data.referenced_tweets?.some(tweet => tweet.type === 'retweeted') ?? false;
+    
+    let mention;
+    if(referenced_tweets) {
+      const parentTweet = await userClientV2.v2.singleTweet(referenced_tweets[0].id, {
+        expansions: [
+          'entities.mentions.username',
+        ],
+      });
+      mention = parentTweet.data.entities?.mentions.find((mention) => mention.username === 'bot_do_caze');
+    }
+    const isAlreadyMentioned = mention && (text.match(/@bot_do_caze/g).length === 1);
+  
+    const isAReplyForMention = (referenced_tweets && in_reply_to_user_id === '1498415154962350085')
 
-  //   replyTweet(id);
-  // });
+    if (isARt || !hasMentionText || isAReplyForMention || isAlreadyMentioned) {
+      return;
+    }
 
-  stream.close();
+    replyTweet(id);
+  });
 }
 openStream();
