@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,8 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "twitter-api-v2": "^1.11.0"
+  },
+  "engines": {
+    "node": "17.4.0"
   }
 }
