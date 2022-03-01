@@ -24,7 +24,7 @@ async function replyTweet(tweetId) {
     accessToken: process.env.ACCESS_TOKEN,
     accessSecret: process.env.ACCESS_TOKEN_SECRET,
   });
-  await userClientV1.v1.reply(randomAnswer, tweetId);
+  await userClientV1.v1.reply(randomAnswer(), tweetId);
 }
 
 async function openStream() {
