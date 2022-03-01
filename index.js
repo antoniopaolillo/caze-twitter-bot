@@ -53,8 +53,9 @@ async function openStream() {
   stream.on(ETwitterStreamEvent.Data, async tweet => {
     const { data: { text, referenced_tweets, in_reply_to_user_id, id } } = tweet;
     const hasMentionText = text.includes("@bot_do_caze");
+    const isARt = tweet.data.referenced_tweets?.some(tweet => tweet.type === 'retweeted') ?? false;
     const isAReplyForMention = (referenced_tweets && in_reply_to_user_id === '1498415154962350085')
-    if (!hasMentionText || isAReplyForMention) {
+    if (isARt || !hasMentionText || isAReplyForMention) {
       return;
     }
 
