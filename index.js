@@ -48,18 +48,21 @@ async function openStream() {
     expansions: ['referenced_tweets.id', 'in_reply_to_user_id'],
   });
 
-  stream.autoReconnect = true;
+  // stream.autoReconnect = true;
 
-  stream.on(ETwitterStreamEvent.Data, async tweet => {
-    const { data: { text, referenced_tweets, in_reply_to_user_id, id } } = tweet;
-    const hasMentionText = text.includes("@bot_do_caze");
-    const isARt = tweet.data.referenced_tweets?.some(tweet => tweet.type === 'retweeted') ?? false;
-    const isAReplyForMention = (referenced_tweets && in_reply_to_user_id === '1498415154962350085')
-    if (isARt || !hasMentionText || isAReplyForMention) {
-      return;
-    }
+  // stream.on(ETwitterStreamEvent.Data, async tweet => {
+  //   const { data: { text, referenced_tweets, in_reply_to_user_id, id } } = tweet;
+  //   const hasMentionText = text.includes("@bot_do_caze");
+  //   const isARt = tweet.data.referenced_tweets?.some(tweet => tweet.type === 'retweeted') ?? false;
+  //   const isAReplyForMention = (referenced_tweets && in_reply_to_user_id === '1498415154962350085')
+  //   console.log(data);
+  //   if (isARt || !hasMentionText || isAReplyForMention) {
+  //     return;
+  //   }
 
-    replyTweet(id);
-  });
+  //   replyTweet(id);
+  // });
+
+  stream.close();
 }
 openStream();
